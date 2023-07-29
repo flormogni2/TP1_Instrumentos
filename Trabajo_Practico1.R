@@ -5,7 +5,7 @@
 #2. Se instalaron las librerías
 
 install.packages("tidyverse")
-library("tidyverse")
+library(tidyverse)
 
 install.packages("sf")
 library(sf)
@@ -27,3 +27,38 @@ datos_oport_comerciales$MOC_ZONAS_ID <- as.character(datos_oport_comerciales$MOC
 datos_oport_comerciales <- datos_oport_comerciales %>% rename(zone_id = MOC_ZONAS_ID)
 
 mapa_oport_comerciales <- left_join(datos_oport_comerciales, zonas, by = "zone_id")
+
+# Para ver los datos: 
+skimr::skim(mapa_oport_comerciales)
+
+unique(mapa_oport_comerciales$RUBRO_PREDOMINANTE)
+
+#Selecciono las columnas que quiero analizar
+mapa_oc_red <- mapa_oport_comerciales %>% 
+  select(zone_id, PRECIO_PROMEDIO_ALQUILER_LOCAL, RUBRO_PREDOMINANTE, CANTIDAD_HOGARES, POBLACION_VIVIENTE, POBLACION_TRABAJADORA, SUPERFICIE_M2_PROMEDIO_ALQUILER, radios, geometry)
+
+colnames(mapa_oc_red)
+
+#Convierto la columna superficie a numeric en vez de character
+
+class(mapa_oc_red$SUPERFICIE_M2_PROMEDIO_ALQUILER)
+mapa_oc_red$superficie_m2_promedio <- as.numeric(mapa_oc_red$SUPERFICIE_M2_PROMEDIO_ALQUILER)
+
+class(mapa_oc_red$CANTIDAD_HOGARES)
+
+mapa_oc_red <- mapa_oc_red %>% 
+  mutate(across(.cols = where(is.numeric), 
+                ~ round(x = ., digits = 1)))
+
+mean(mapa_oc_red$CANTIDAD_HOGARES)
+
+skimr::skim(mapa_oc_red)
+
+# Supongamos que tenemos un dataframe llamado "ventas" con columnas "producto" y "cantidad"
+# Queremos filtrar las filas donde la cantidad es mayor a 1000 y el producto es "Widget" o "Gadget"
+
+ventas_filtradas <- filter(ventas, cantidad > 1000, producto %in% c("Widget", "Gadget"))
+
+unique(mapa_oc_red$RUBRO_PREDOMINANTE)
+
+                                           
