@@ -54,11 +54,16 @@ mean(mapa_oc_red$CANTIDAD_HOGARES)
 
 skimr::skim(mapa_oc_red)
 
-# Supongamos que tenemos un dataframe llamado "ventas" con columnas "producto" y "cantidad"
-# Queremos filtrar las filas donde la cantidad es mayor a 1000 y el producto es "Widget" o "Gadget"
+# Queremos analizar los principales rubros de acuerdo con la cantidad media de las familias. 
 
-ventas_filtradas <- filter(ventas, cantidad > 1000, producto %in% c("Widget", "Gadget"))
+Resumen_rubros <- mapa_oc_red %>%
+  select(-geometry) %>%
+  group_by(RUBRO_PREDOMINANTE) %>%
+  summarise(promedio_hogares = mean(CANTIDAD_HOGARES)) %>%
+  arrange(desc(promedio_hogares))
 
-unique(mapa_oc_red$RUBRO_PREDOMINANTE)
+print(Resumen_rubros)
+
+##Resulta llamativo que el primer rubro predominante en base al promedio de hogares sea "Salud y Cosmética", mientras que la categoría "Supermercados y almacenes" se encuentra en el quinto puesto, luego de "Kioscos y loterias", "Indumentaria" y "óptica y joyería", que parecerían rubros menos relevantes en el día a día. 
 
                                            
